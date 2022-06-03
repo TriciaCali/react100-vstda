@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Listlayout from './Listlayout';
 
 class App extends Component {
   constructor(props) {
@@ -14,7 +15,7 @@ class App extends Component {
     this.clickAddItem = this.clickAddItem.bind(this);
   }
 
-  handleChange(e) {
+  handleChange(e) { // stringify makes a detached copy and JSON.parse turns it into an object
     const todoItemClone = JSON.parse(JSON.stringify(this.state.todoItem));
     todoItemClone[e.target.name] = e.target.value;
     this.setState({ todoItem: todoItemClone });
@@ -27,6 +28,8 @@ class App extends Component {
   }
 
   render() {
+    const listClone2 = [...this.state.list];
+    console.log(listClone2);
     return (
       <div className='container'>
         <div>
@@ -35,19 +38,35 @@ class App extends Component {
           <hr />
         </div>
         <div className='row'>
-          <div className='col-4'>
+          <div className='col-4 bg-light border'>
             <div>
+              <div className='border-bottom'><p>Add new Todo</p></div>
+              <label htmlFor='inputTodo'><b>I want to...</b></label>
               <textarea className='create-todo-text' name='inputTodo' onChange={ this.handleChange } />
+              <label htmlFor='selectPriority'><b>How much of a priority is this?</b></label>
               <select className='create-todo-priority' name='selectPriority' onChange={ this.handleChange }>
-                <option value='1'>Low</option>
-                <option value='2'>Medium</option>
-                <option value='3'>High</option>
-              </select>
+                <option value='alert alert-primary'>Low</option>
+                <option value='alert alert-warning'>Medium</option>
+                <option value='alert alert-danger'>High</option>
+              </select><br /><br />
               <button type='button' onClick={ this.clickAddItem }>Add</button>
             </div>
           </div>
-          <div className='col-7 offset-1'>
-            <h1>column right</h1>
+          <div className='col-7 offset-1 bg-light border'>
+          <p className='border-bottom'>View Todos</p>
+              {listClone2.length === 0
+                ? <p className='alert alert-primary border'><b>Welcome to Very Simple Todo App!</b><br />Get started now by adding a new todo on the left.</p>
+                : //'list of todos'
+                  listClone2.map(todo => (
+                   <div><Listlayout
+                     description={ todo.inputTodo }
+                      priority={ todo.selectPriority }
+                    />
+                 
+             </div>))
+        
+              }
+            
           </div>
 
         </div>
