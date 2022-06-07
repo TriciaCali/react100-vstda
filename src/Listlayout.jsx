@@ -10,20 +10,26 @@ export default props => (
              ? <div className='list-group'>
                <div width='100%' className={ props.priority } >
                  <label htmlFor='updateTodo'><b>Description</b></label>
-                 <textarea className='update-todo-text' name='updateTodo' value={ props.description } />
+                 <textarea className='update-todo-text' name='inputTodo' defaultValue={ props.description } onChange={ props.handleUpdateChangefx } />
                  <label htmlFor='updatePriority'><b>Priority</b></label>
-                 <select className='update-todo-priority ' name='updatePriority' defaultValue={ props.priority } >
+                 <select className='update-todo-priority ' name='selectPriority' defaultValue={ props.priority } onChange={ props.handleUpdateChangefx } >
                    <option value='none' selected disabled hidden>Select an Priority</option>
                    <option value='list-group-item list-group-item-success'>Low Priority</option>
                    <option value='list-group-item list-group-item-warning'>Medium Priority</option>
                    <option value='list-group-item list-group-item-danger'>High Priority</option>
                  </select><br /><br />
-                 <button type='button' >Save</button>
+                 <button type='button' onClick={ ()=> props.clickSaveEditItemfx(props.index) } >Save</button>
                </div>
              </div>
             // 'list as regular style'
              : <div className='list-group'>
-               <div className={ props.priority } width='100%' >{ props.description }
+               <div className={ props.priority } width='100%' >
+                 <div className='form-check'>
+                   <input className='form-check-input' type='checkbox' value='' id='flexCheckDefault' onChange={ () => props.handleChangeCrossOfffx(props.index) } />
+                   <label className='form-check-label' htmlFor='flexCheckDefault'>
+                     <span className={ props.crossOff? 'strike-through' : 'regular' }>{ props.description }</span>
+                   </label>
+                 </div>
                  <a className='edit-todo' onClick={ () => props.showEditFormfx(props.index) } id={ props.description }>
                    <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' className='bi bi-pencil-square' viewBox='0 0 16 16'>
                      <path d='M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z' />

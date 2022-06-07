@@ -1,3 +1,4 @@
+//import e from 'express';
 import React, { Component } from 'react';
 import Listlayout from './Listlayout';
 
@@ -7,9 +8,17 @@ class App extends Component {
     this.state = {
       todoItem: {
         inputTodo: '',
+        selectPriority: 'none',
+        showEditForm: false,
+        crossOff: false,
+      },
+      updateTodoItem: {
+        inputTodo: '',
         selectPriority: '',
         showEditForm: false,
+        crossOff: false,
       },
+
       list: [],
 
       currentItemDescrip: '',
@@ -20,6 +29,9 @@ class App extends Component {
     this.clickAddItem = this.clickAddItem.bind(this);
     this.deleteItem = this.deleteItem.bind(this);
     this.showEditForm = this.showEditForm.bind(this);
+    this.handleUpdateChange = this.handleUpdateChange.bind(this);
+    this.clickSaveEditItem = this.clickSaveEditItem.bind(this);
+    this.handleChangeCrossOff = this.handleChangeCrossOff.bind(this);
    /* this.editForm = this.editForm.bind(this);
     this.clickSaveUpdatetodo= this.lickSaveUpdatetodo.bind(this); */
     // this.clickEditItem = this.clickSaveEditItem.bind(this);
@@ -30,12 +42,22 @@ class App extends Component {
     todoItemClone[e.target.name] = e.target.value;
     this.setState({ todoItem: todoItemClone });
   }
+  handleUpdateChange(e) { // stringify makes a detached copy and JSON.parse turns it into an object
+    const updateTodoItemClone = JSON.parse(JSON.stringify(this.state.updateTodoItem));
+    updateTodoItemClone[e.target.name] = e.target.value;
+    this.setState({ updateTodoItem: updateTodoItemClone });
+  }
 
   clickAddItem() {
     this.setState([this.state.todoItem.showEditForm : false])
     const listClone = [...this.state.list];
     listClone.push(this.state.todoItem);
     this.setState({ list: listClone });
+    this.setState({todoItem :
+    {inputTodo: '',
+    selectPriority: 'none',
+    showEditForm: false,
+    crossOff: false,}})
   }
 
   deleteItem(i) {
@@ -52,16 +74,27 @@ class App extends Component {
       listClone[i].showEditForm = false;
     }
     this.setState({ list: listClone });
-   
+    this.setState({updateTodoItem : listClone[i] })
   }
 
-  // clickSaveEditItem(e){
-    // const listClone2 = [...this.state.list];
-    // const description= e.
-    // const priority =
-    // listClone2[de]
-  // }
+   clickSaveEditItem(i){
+     console.log('this is i value: ' + i)
+    const listClone = [...this.state.list];
+    listClone[i] = this.state.updateTodoItem;
+    listClone[i].showEditForm = false;
+    this.setState({ list: listClone });
+   }
 
+   handleChangeCrossOff(i){
+    const listClone = [...this.state.list];
+     if (listClone[i].crossOff == false){
+       listClone[i].crossOff = true;
+     }
+     else {
+       listClone[i].crossOff = false;
+    }
+    this.setState({list : listClone })
+   }
   /*
 
 
@@ -97,14 +130,14 @@ class App extends Component {
           <hr />
         </div>
         <div className='row'>
-          <div className='col-4 bg-light border'>
-            <div>
+          <div className='col-4' >
+            <div className='row bg-light border'>
               <div className='border-bottom'><p>Add new Todo</p></div>
               <label htmlFor='inputTodo'><b>I want to...</b></label>
-              <textarea className='create-todo-text' name='inputTodo' onChange={ this.handleChange } />
+              <textarea className='create-todo-text' name='inputTodo' onChange={ this.handleChange } value={this.state.todoItem.inputTodo}/>
               <label htmlFor='selectPriority'><b>How much of a priority is this?</b></label>
-              <select className='create-todo-priority' name='selectPriority' onChange={ this.handleChange }>
-                <option value='none' selected disabled hidden>Select an Option</option>
+              <select className='create-todo-priority' name='selectPriority' onChange={ this.handleChange } value={this.state.todoItem.selectPriority}>
+                <option value='none'  disabled hidden>Select an Option</option>
                 <option value='list-group-item list-group-item-success'>Low</option>
                 <option value='list-group-item list-group-item-warning'>Medium</option>
                 <option value='list-group-item list-group-item-danger'>High</option>
@@ -123,10 +156,14 @@ class App extends Component {
                       <Listlayout
                         description={ todo.inputTodo }
                         priority={ todo.selectPriority }
+                        crossOff= { todo.crossOff }
                         index={ i }
                         deleteItemfx={ this.deleteItem }
                         showEditFormfx={ this.showEditForm }
                         showEditTorF={ this.state.list[i].showEditForm }
+                        handleUpdateChangefx={this.handleUpdateChange}
+                        clickSaveEditItemfx={ this.clickSaveEditItem }
+                        handleChangeCrossOfffx= {this.handleChangeCrossOff }
                       />
 
                     </div>))
